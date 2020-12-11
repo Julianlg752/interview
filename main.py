@@ -40,6 +40,7 @@ def upload():
         f = open("top_20.json", "w")
         f.write(json.dumps(podcast_list, indent=4))
     except OSError as err:
+        f.close()
         return "{\"Error 00\":\"Error Writting File +"+err+"\"}"
     f.close()
     return "{\"Ok\":\"Top Saved\"}"
