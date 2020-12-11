@@ -2,7 +2,7 @@ from flask import Flask, request
 import requests as rq
 import json
 import os
-
+import upload
 
 app = Flask(__name__)
 PODCAST_API = os.getenv("PODCAST_API")
@@ -20,7 +20,7 @@ def lookup():
     name = request.args.get("name")
     result = rq.get(PODCAST_API)
     if result.status_code != 200:
-        return "Error Reported...!"
+        return "{\"Error\":\"Error Happend, contact the developer\"}"
 
     podcasts = result.json()["feed"]["results"]
     response = []
@@ -32,18 +32,19 @@ def lookup():
 
 
 @app.route('/add_top', methods=["POST"])
-def upload():
-    if request.is_json is not True:
-        return "{\"Error\":\"Invalid JSON\"}"
-    podcast_list = request.get_json()
-    try:
-        f = open("top_20.json", "w")
-        f.write(json.dumps(podcast_list, indent=4))
-    except OSError as err:
-        f.close()
-        return "{\"Error 00\":\"Error Writting File +"+err+"\"}"
-    f.close()
-    return "{\"Ok\":\"Top Saved\"}"
+def upload_top():
+    """ /add_top use this endpoint to add the top 20 podcast
+        init the file top_20.json
+    """
+    return upload.upload_top(request, "x")
+
+
+@app.route('/update_top', methods=["POST"])
+def update():
+    """ /update_top use this endpoint to replace the top 20 podcast
+        the function replace the top_20.json file.
+    """
+    return upload.upload_top(request, "w")
 
 
 # /ping use this endpoint to check if the server is alive
