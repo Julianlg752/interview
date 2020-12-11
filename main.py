@@ -49,6 +49,12 @@ def update():
 
 @app.route('/remove_podcast', methods=["POST"])
 def remove_podcast():
+    """
+        /remove_podcast use this end_point to remove a podcast
+            from the file top_20.json
+        Param: @podcast_id
+        return a Message if the file was updated correctly
+    """
     podcast_id = request.args.get("podcast_id")
     if podcast_id is None or podcast_id == "":
         return '{"Error":"Please add a valid podcast id"}'
