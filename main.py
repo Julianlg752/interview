@@ -31,6 +31,20 @@ def lookup():
     return json.dumps(response, indent=4)
 
 
+@app.route('/add_top', methods=["POST"])
+def upload():
+    if request.is_json is not True:
+        return "{\"Error\":\"Invalid JSON\"}"
+    podcast_list = request.get_json()
+    try:
+        f = open("top_20.json", "w")
+        f.write(json.dumps(podcast_list, indent=4))
+    except OSError as err:
+        return "{\"Error 00\":\"Error Writting File +"+err+"\"}"
+    f.close()
+    return "{\"Ok\":\"Top Saved\"}"
+
+
 # /ping use this endpoint to check if the server is alive
 @app.route('/ping')
 def index():
