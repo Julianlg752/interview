@@ -1,5 +1,4 @@
 from flask import Flask, request
-import requests as rq
 import json
 import os
 import upload
@@ -18,9 +17,7 @@ def lookup():
         TODO: add the artistId also as an option to search the podcast
     """
     name = request.args.get("name")
-    result = rq.get(PODCAST_API)
-    if result.status_code != 200:
-        return "{\"Error\":\"Error Happend, contact the developer\"}"
+    result = upload.do_requests(PODCAST_API, "GET")
 
     podcasts = result.json()["feed"]["results"]
     response = []
@@ -59,6 +56,32 @@ def remove_podcast():
     if podcast_id is None or podcast_id == "":
         return '{"Error":"Please add a valid podcast id"}'
     return upload.read_top(podcast_id)
+
+
+@app.route('/grouped_podcast', methods=["GET"])
+def grouped_podcast():
+    result = upload.do_requests(PODCAST_API, "GET")
+
+    podcasts = result.json()["feed"]["results"]
+    grouped = []
+    # for i in podcasts["genres"]:
+    #    genre_name = i["name"]
+    #    grouped.append(genre_name)
+    title = []
+    for j in podcasts:
+        last_genre = ""
+        # print(j)
+        for i in j["genres"]:
+            genre_name = i["name"]
+            if last_genre != genre_name:
+                last_genre = genre_name
+                title.append(j["name"])
+            print(last_genre, j["name"])
+            grouped.append({last_genre: title})
+        # grouped.append({last_genre: title})
+
+    print(grouped)
+    return "Wait..."
 
 
 # /ping use this endpoint to check if the server is alive
