@@ -1,4 +1,5 @@
 import json
+import requests as rq
 
 
 def upload_top(req, file_action, message):
@@ -32,3 +33,10 @@ def read_top(podcast_id):
     if len(new_podcast_dict) == len(podcast_json):
         return '{"Warning":"Podcast Id not Found"}'
     return save_file(new_podcast_dict, "w", "Updated file top_20.json")
+
+
+def do_requests(endpoint, method):
+    result = rq.request(method, endpoint)
+    if result.status_code != 200:
+        return "{\"Error\":\"Error Happend, contact the developer\"}"
+    return result
