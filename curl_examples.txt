@@ -1,0 +1,2 @@
+curl -XGET "localhost:5000/lookup?name=The%20Daily"
+curl -XGET "localhost:5000/remove_podcast?podcast_id=1322200189"
